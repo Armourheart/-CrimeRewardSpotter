@@ -1,0 +1,8 @@
+// ==UserScript==
+// @name        Torn Crime Reward Tracker with Auto-Update
+// @namespace   https://github.com/Armourheart/-CrimeRewardSpotter/new/main
+// @description A tool to track crimes and their potential rewards in Torn, with auto-update capability
+// @author      Armorheart
+// @match       https://www.torn.com/loader.php?sid=crimes*
+// @version     1.6
+// ==/UserScript==
