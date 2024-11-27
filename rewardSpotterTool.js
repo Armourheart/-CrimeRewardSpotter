@@ -34,3 +34,27 @@
       crimeDatabase.push({ crime_name: crimeName, rewards: [reward] });
     }
   }
+
+  function monitorRewards() {
+    const targetNode = document.querySelector('.crime-reward-container');
+    if (!targetNode) {
+      console.error('Reward container not found. Please check the selector.');
+      return;
+    }
+
+    let mutationTimeout;
+    const observer = new MutationObserver(() => {
+      clearTimeout(mutationTimeout);
+      mutationTimeout = setTimeout(() => {
+        const rewardElements = targetNode.querySelectorAll('.reward-selector-class');
+        rewardElements.forEach(el => {
+          const rewardText = el.textContent.trim();
+          const crimeName = document.querySelector('.crime-name-class').textContent.trim();
+          addRewardToCrime(crimeName, rewardText);
+        });
+      }, 100); // Debounce updates
+    });
+
+    observer.observe(targetNode, { childList: true, subtree: true });
+    console.log('Monitoring rewards for updates...');
+  }
