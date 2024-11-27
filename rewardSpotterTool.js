@@ -58,3 +58,27 @@
     observer.observe(targetNode, { childList: true, subtree: true });
     console.log('Monitoring rewards for updates...');
   }
+
+  function highlightCrimesBasedOnRewards() {
+    const crimeElements = document.querySelectorAll('.crime-option-class'); // Replace with the actual class for crime options
+
+    if (!crimeElements.length) {
+      console.warn('No crime options found for highlighting.');
+      return;
+    }
+
+    crimeElements.forEach(crimeElement => {
+      const normalizedCrimeName = crimeElement.textContent.trim().toLowerCase();
+      const matchingCrime = crimeDatabase.find(crime => crime.crime_name.toLowerCase() === normalizedCrimeName);
+
+      if (matchingCrime) {
+        // Highlight crimes that have rewards in the database
+        crimeElement.style.border = '2px solid green';
+        crimeElement.title = `Possible Rewards: ${matchingCrime.rewards.join(', ')}`;
+      } else {
+        // Optionally style crimes without known rewards
+        crimeElement.style.border = '2px solid red';
+        crimeElement.title = 'No known rewards for this crime.';
+      }
+    });
+  }
