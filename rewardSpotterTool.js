@@ -82,3 +82,60 @@
       }
     });
   }
+
+  function createUIPanel() {
+    const panel = document.createElement('div');
+    panel.id = 'crime-reward-tracker';
+    panel.style.position = 'fixed';
+    panel.style.top = '100px';
+    panel.style.right = '20px';
+    panel.style.width = '300px';
+    panel.style.backgroundColor = '#333';
+    panel.style.color = '#fff';
+    panel.style.padding = '10px';
+    panel.style.borderRadius = '5px';
+    panel.style.zIndex = '1000';
+    panel.style.fontFamily = 'Arial, sans-serif';
+    panel.innerHTML = `
+      <h3 style="margin-top: 0;">Crime Reward Tracker</h3>
+      <p style="font-size: 12px; color: #bbb;">
+        This script works only on the current page and updates data based on your actions.
+        No additional requests are made to Torn servers.
+      </p>
+      <label for="reward-search">Search Reward:</label>
+      <input type="text" id="reward-search" style="width: 100%; margin-bottom: 10px;" />
+      <button id="search-button" style="width: 100%;">Search</button>
+      <div id="search-results" style="margin-top: 10px; max-height: 200px; overflow-y: auto;"></div>
+    `;
+    document.body.appendChild(panel);
+
+    document.getElementById('search-button').addEventListener('click', () => {
+      const query = document.getElementById('reward-search').value;
+      const results = findCrimesByReward(query);
+
+      const resultsDiv = document.getElementById('search-results');
+      resultsDiv.innerHTML = '';
+
+      if (results.length > 0) {
+        results.forEach(crime => {
+          const crimeDiv = document.createElement('div');
+          crimeDiv.style.marginBottom = '10px';
+          crimeDiv.innerHTML = `<strong>${crime.crime_name}</strong>: ${crime.rewards.join(', ')}`;
+          resultsDiv.appendChild(crimeDiv);
+        });
+      } else {
+        resultsDiv.innerHTML = '<em>No crimes found for this reward.</em>';
+      }
+    });
+  }
+
+  function init() {
+    console.log('Torn Crime Reward Tracker with Auto-Update loaded');
+    createUIPanel();
+    monitorRewards();
+    highlightCrimesBasedOnRewards();
+  }
+
+  window.addEventListener('load', init);
+})();
+
