@@ -6,10 +6,11 @@
 // @match       https://www.torn.com/loader.php?sid=crimes*
 // @version     1.6
 // @grant       none
-// @downloadURL https://greasyfork.org/scripts/519896-torn-crime-reward-tracker-with-auto-update/code/Torn%20Crime%20Reward%20Tracker%20with%20Auto-Update.user.js
-// @updateURL   https://greasyfork.org/scripts/519896-torn-crime-reward-tracker-with-auto-update/code/Torn%20Crime%20Reward%20Tracker%20with%20Auto-Update.user.js
-// license      MIT
+// @downloadURL https://greasyfork.org/scripts/519899-torn-crime-reward-tracker-with-auto-update/code/Torn%20Crime%20Reward%20Tracker%20with%20Auto-Update.user.js
+// @updateURL   https://greasyfork.org/scripts/519899-torn-crime-reward-tracker-with-auto-update/code/Torn%20Crime%20Reward%20Tracker%20with%20Auto-Update.user.js
+// @license     MIT
 // ==/UserScript==
+
 
 (function () {
   'use strict';
