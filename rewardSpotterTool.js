@@ -1,13 +1,3 @@
-// ==UserScript==
-// @name        Torn Crime Reward Tracker with Auto-Update
-// @namespace   https://github.com/Armourheart/-CrimeRewardSpotter/edit/main/rewardSpotterTool
-// @description A tool to track crimes and their potential rewards in Torn, with auto-update capability
-// @author      Armorheart
-// @match       https://www.torn.com/loader.php?sid=crimes*
-// @version     1.6
-// @license     MIT
-// ==/UserScript==
-
 (function () {
   'use strict';
 
@@ -26,8 +16,8 @@
       ]
     }
   ];
-  
-function getCurrentCrimeDetails() {
+
+  function getCurrentCrimeDetails() {
     const crimeNameElement = document.querySelector('.crime-name-class'); // Top-level crime selector
     const subsetCrimeElement = document.querySelector('.subset-crime-class'); // Subset crime selector (adjust as needed)
 
@@ -65,7 +55,6 @@ function getCurrentCrimeDetails() {
     }
   }
 
-
   function monitorRewards() {
     const targetNode = document.querySelector('.crime-reward-container'); // Update selector as necessary
     if (!targetNode) {
@@ -93,6 +82,7 @@ function getCurrentCrimeDetails() {
 
     observer.observe(targetNode, { childList: true, subtree: true });
     console.log('Monitoring rewards for updates...');
+  } // <-- Added this closing bracket
 
   function highlightCrimesBasedOnRewards() {
     const crimeElements = document.querySelectorAll('.crime-option-class'); // Replace with the actual class for crime options
