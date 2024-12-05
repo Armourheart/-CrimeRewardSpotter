@@ -11,32 +11,62 @@
   'use strict';
 
   const crimeDatabase = [
-    { crime_name: "Pickpocketing", rewards: ["$100", "Diamond"] },
-    { crime_name: "Arson", rewards: ["Molotov Cocktail", "Ash"] },
-    { crime_name: "Burglary", rewards: ["Jewelry", "Cash"] },
+    {
+      crime_name: "Pickpocketing",
+      subsets: [
+        { name: "Mugging", rewards: ["$100", "Diamond"] },
+        { name: "Snatching", rewards: ["Watch"] }
+      ]
+    },
+    {
+      crime_name: "Arson",
+      subsets: [
+        { name: "Car Fire", rewards: ["Molotov Cocktail", "Ash"] }
+      ]
+    }
   ];
+  
+function getCurrentCrimeDetails() {
+    const crimeNameElement = document.querySelector('.crime-name-class'); // Top-level crime selector
+    const subsetCrimeElement = document.querySelector('.subset-crime-class'); // Subset crime selector (adjust as needed)
 
-  function findCrimesByReward(itemName) {
-    return crimeDatabase.filter(crime =>
-      crime.rewards.some(reward => reward.toLowerCase().includes(itemName.toLowerCase()))
-    );
+    if (!crimeNameElement) {
+      console.warn('Crime name element not found!');
+      return null;
+    }
+
+    const crimeName = crimeNameElement.textContent.trim();
+    const subsetCrime = subsetCrimeElement ? subsetCrimeElement.textContent.trim() : null;
+
+    return { crimeName, subsetCrime };
   }
 
-  function addRewardToCrime(crimeName, reward) {
-    const crime = crimeDatabase.find(crime => crime.crime_name.toLowerCase() === crimeName.toLowerCase());
-    if (crime) {
-      if (!crime.rewards.includes(reward)) {
-        crime.rewards.push(reward);
-        console.log(`Added reward "${reward}" to crime "${crimeName}".`, crimeDatabase);
-      }
-    } else {
-      console.log(`Crime "${crimeName}" not found. Adding new crime with reward.`, crimeDatabase);
-      crimeDatabase.push({ crime_name: crimeName, rewards: [reward] });
+  function addRewardToCrime(crimeName, subsetCrime, reward) {
+    let crime = crimeDatabase.find(crime => crime.crime_name.toLowerCase() === crimeName.toLowerCase());
+
+    if (!crime) {
+      console.log(`Crime "${crimeName}" not found. Adding new crime with subset and reward.`);
+      crime = { crime_name: crimeName, subsets: [] };
+      crimeDatabase.push(crime);
+    }
+
+    let subset = crime.subsets.find(sub => sub.name.toLowerCase() === subsetCrime?.toLowerCase());
+
+    if (!subset && subsetCrime) {
+      console.log(`Subset "${subsetCrime}" not found for crime "${crimeName}". Adding new subset.`);
+      subset = { name: subsetCrime, rewards: [] };
+      crime.subsets.push(subset);
+    }
+
+    if (subset && !subset.rewards.includes(reward)) {
+      subset.rewards.push(reward);
+      console.log(`Added reward "${reward}" to subset "${subsetCrime}" of crime "${crimeName}".`);
     }
   }
 
+
   function monitorRewards() {
-    const targetNode = document.querySelector('.crime-reward-container');
+    const targetNode = document.querySelector('.crime-reward-container'); // Update selector as necessary
     if (!targetNode) {
       console.error('Reward container not found. Please check the selector.');
       return;
@@ -47,17 +77,21 @@
       clearTimeout(mutationTimeout);
       mutationTimeout = setTimeout(() => {
         const rewardElements = targetNode.querySelectorAll('.reward-selector-class');
+        const crimeDetails = getCurrentCrimeDetails();
+
+        if (!crimeDetails) return;
+
+        const { crimeName, subsetCrime } = crimeDetails;
+
         rewardElements.forEach(el => {
           const rewardText = el.textContent.trim();
-          const crimeName = document.querySelector('.crime-name-class').textContent.trim();
-          addRewardToCrime(crimeName, rewardText);
+          addRewardToCrime(crimeName, subsetCrime, rewardText);
         });
       }, 100); // Debounce updates
     });
 
     observer.observe(targetNode, { childList: true, subtree: true });
     console.log('Monitoring rewards for updates...');
-  }
 
   function highlightCrimesBasedOnRewards() {
     const crimeElements = document.querySelectorAll('.crime-option-class'); // Replace with the actual class for crime options
@@ -111,17 +145,23 @@
 
     document.getElementById('search-button').addEventListener('click', () => {
       const query = document.getElementById('reward-search').value;
-      const results = findCrimesByReward(query);
+      const results = crimeDatabase.filter(crime =>
+        crime.subsets.some(sub => sub.rewards.some(reward => reward.toLowerCase().includes(query.toLowerCase())))
+      );
 
       const resultsDiv = document.getElementById('search-results');
       resultsDiv.innerHTML = '';
 
       if (results.length > 0) {
         results.forEach(crime => {
-          const crimeDiv = document.createElement('div');
-          crimeDiv.style.marginBottom = '10px';
-          crimeDiv.innerHTML = `<strong>${crime.crime_name}</strong>: ${crime.rewards.join(', ')}`;
-          resultsDiv.appendChild(crimeDiv);
+          crime.subsets.forEach(subset => {
+            if (subset.rewards.some(reward => reward.toLowerCase().includes(query.toLowerCase()))) {
+              const crimeDiv = document.createElement('div');
+              crimeDiv.style.marginBottom = '10px';
+              crimeDiv.innerHTML = `<strong>${crime.crime_name} (${subset.name})</strong>: ${subset.rewards.join(', ')}`;
+              resultsDiv.appendChild(crimeDiv);
+            }
+          });
         });
       } else {
         resultsDiv.innerHTML = '<em>No crimes found for this reward.</em>';
