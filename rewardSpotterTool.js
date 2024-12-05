@@ -40,12 +40,6 @@ function getCurrentCrimeDetails() {
 
     return { crimeName, subsetCrime };
   }
-  
-  function findCrimesByReward(itemName) {
-    return crimeDatabase.filter(crime =>
-      crime.rewards.some(reward => reward.toLowerCase().includes(itemName.toLowerCase()))
-    );
-  }
 
   function addRewardToCrime(crimeName, subsetCrime, reward) {
     let crime = crimeDatabase.find(crime => crime.crime_name.toLowerCase() === crimeName.toLowerCase());
@@ -151,17 +145,23 @@ function getCurrentCrimeDetails() {
 
     document.getElementById('search-button').addEventListener('click', () => {
       const query = document.getElementById('reward-search').value;
-      const results = findCrimesByReward(query);
+      const results = crimeDatabase.filter(crime =>
+        crime.subsets.some(sub => sub.rewards.some(reward => reward.toLowerCase().includes(query.toLowerCase())))
+      );
 
       const resultsDiv = document.getElementById('search-results');
       resultsDiv.innerHTML = '';
 
       if (results.length > 0) {
         results.forEach(crime => {
-          const crimeDiv = document.createElement('div');
-          crimeDiv.style.marginBottom = '10px';
-          crimeDiv.innerHTML = `<strong>${crime.crime_name}</strong>: ${crime.rewards.join(', ')}`;
-          resultsDiv.appendChild(crimeDiv);
+          crime.subsets.forEach(subset => {
+            if (subset.rewards.some(reward => reward.toLowerCase().includes(query.toLowerCase()))) {
+              const crimeDiv = document.createElement('div');
+              crimeDiv.style.marginBottom = '10px';
+              crimeDiv.innerHTML = `<strong>${crime.crime_name} (${subset.name})</strong>: ${subset.rewards.join(', ')}`;
+              resultsDiv.appendChild(crimeDiv);
+            }
+          });
         });
       } else {
         resultsDiv.innerHTML = '<em>No crimes found for this reward.</em>';
