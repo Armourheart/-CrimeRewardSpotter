@@ -11,9 +11,19 @@
   'use strict';
 
   const crimeDatabase = [
-    { crime_name: "Pickpocketing", rewards: ["$100", "Diamond"] },
-    { crime_name: "Arson", rewards: ["Molotov Cocktail", "Ash"] },
-    { crime_name: "Burglary", rewards: ["Jewelry", "Cash"] },
+    {
+      crime_name: "Pickpocketing",
+      subsets: [
+        { name: "Mugging", rewards: ["$100", "Diamond"] },
+        { name: "Snatching", rewards: ["Watch"] }
+      ]
+    },
+    {
+      crime_name: "Arson",
+      subsets: [
+        { name: "Car Fire", rewards: ["Molotov Cocktail", "Ash"] }
+      ]
+    }
   ];
 
   function findCrimesByReward(itemName) {
