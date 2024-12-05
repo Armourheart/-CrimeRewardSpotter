@@ -46,7 +46,7 @@
   }
 
   function monitorRewards() {
-    const targetNode = document.querySelector('.crime-reward-container');
+    const targetNode = document.querySelector('.crime-reward-container'); // Update selector as necessary
     if (!targetNode) {
       console.error('Reward container not found. Please check the selector.');
       return;
@@ -57,17 +57,21 @@
       clearTimeout(mutationTimeout);
       mutationTimeout = setTimeout(() => {
         const rewardElements = targetNode.querySelectorAll('.reward-selector-class');
+        const crimeDetails = getCurrentCrimeDetails();
+
+        if (!crimeDetails) return;
+
+        const { crimeName, subsetCrime } = crimeDetails;
+
         rewardElements.forEach(el => {
           const rewardText = el.textContent.trim();
-          const crimeName = document.querySelector('.crime-name-class').textContent.trim();
-          addRewardToCrime(crimeName, rewardText);
+          addRewardToCrime(crimeName, subsetCrime, rewardText);
         });
       }, 100); // Debounce updates
     });
 
     observer.observe(targetNode, { childList: true, subtree: true });
     console.log('Monitoring rewards for updates...');
-  }
 
   function highlightCrimesBasedOnRewards() {
     const crimeElements = document.querySelectorAll('.crime-option-class'); // Replace with the actual class for crime options
