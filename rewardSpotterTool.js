@@ -25,7 +25,22 @@
       ]
     }
   ];
+  
+function getCurrentCrimeDetails() {
+    const crimeNameElement = document.querySelector('.crime-name-class'); // Top-level crime selector
+    const subsetCrimeElement = document.querySelector('.subset-crime-class'); // Subset crime selector (adjust as needed)
 
+    if (!crimeNameElement) {
+      console.warn('Crime name element not found!');
+      return null;
+    }
+
+    const crimeName = crimeNameElement.textContent.trim();
+    const subsetCrime = subsetCrimeElement ? subsetCrimeElement.textContent.trim() : null;
+
+    return { crimeName, subsetCrime };
+  }
+  
   function findCrimesByReward(itemName) {
     return crimeDatabase.filter(crime =>
       crime.rewards.some(reward => reward.toLowerCase().includes(itemName.toLowerCase()))
