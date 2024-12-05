@@ -32,18 +32,29 @@
     );
   }
 
-  function addRewardToCrime(crimeName, reward) {
-    const crime = crimeDatabase.find(crime => crime.crime_name.toLowerCase() === crimeName.toLowerCase());
-    if (crime) {
-      if (!crime.rewards.includes(reward)) {
-        crime.rewards.push(reward);
-        console.log(`Added reward "${reward}" to crime "${crimeName}".`, crimeDatabase);
-      }
-    } else {
-      console.log(`Crime "${crimeName}" not found. Adding new crime with reward.`, crimeDatabase);
-      crimeDatabase.push({ crime_name: crimeName, rewards: [reward] });
+  function addRewardToCrime(crimeName, subsetCrime, reward) {
+    let crime = crimeDatabase.find(crime => crime.crime_name.toLowerCase() === crimeName.toLowerCase());
+
+    if (!crime) {
+      console.log(`Crime "${crimeName}" not found. Adding new crime with subset and reward.`);
+      crime = { crime_name: crimeName, subsets: [] };
+      crimeDatabase.push(crime);
+    }
+
+    let subset = crime.subsets.find(sub => sub.name.toLowerCase() === subsetCrime?.toLowerCase());
+
+    if (!subset && subsetCrime) {
+      console.log(`Subset "${subsetCrime}" not found for crime "${crimeName}". Adding new subset.`);
+      subset = { name: subsetCrime, rewards: [] };
+      crime.subsets.push(subset);
+    }
+
+    if (subset && !subset.rewards.includes(reward)) {
+      subset.rewards.push(reward);
+      console.log(`Added reward "${reward}" to subset "${subsetCrime}" of crime "${crimeName}".`);
     }
   }
+
 
   function monitorRewards() {
     const targetNode = document.querySelector('.crime-reward-container'); // Update selector as necessary
