@@ -5,7 +5,7 @@
 // @author      Armorheart
 // @match       https://www.torn.com/loader.php?sid=crimes*
 // @version     1.6
-// @license MIT
+// @license     MIT
 // ==/UserScript==
 
 (function () {
